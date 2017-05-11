@@ -3,7 +3,7 @@ import psycopg2
 
 def _get_session():
     try:
-        conn = psycopg2.connect("dbname='CRM' user='postgres' host='localhost' password='root'")
+        conn = psycopg2.connect("host='localhost' dbname='Medicos' user='postgres' password='Manzanar0j4'")
     except:
         print "I am unable to connect to the database"
         return 'error'
@@ -26,3 +26,11 @@ def delete_client(id):
     cur = _get_session()
     query = 'DELETE FROM Clientes WHERE id_cliente="%s";'%(id)
     cur.execute(query)
+
+def triggerE1():
+	cur = _get_session()
+	query1 = 'CREATE TRIGGER E1 AFTER DELETE ON aseguradora FOR EACH ROW BEGIN UPDATE cliente SET id_aseguradora = 0 WHERE id_aseguradora = null END;' 
+	query2 = 'CREATE TRIGGER E2 AFTER UPDATE OF ID_aseguradora ON aseguradora FOR EACH ROW BEGIN UPDATE cliente SET ID_aseguradora = NEW.id WHERE ID_aseguradora = OLD.id;'
+	cur.execute(query1)
+	cur.execute(query2)
+	
